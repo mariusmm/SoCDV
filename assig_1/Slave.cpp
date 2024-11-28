@@ -10,7 +10,7 @@ void Slave::process() {
 
     while(true) {
 
-        wait();
+        
 
         if (rst_n.read() == false) {
             wait();
@@ -19,80 +19,76 @@ void Slave::process() {
         } else {
             mtime_q = mtime_d;
             mtimecmp_q = mtimecmp_d;
-            
         }
 
         mtime_inc = mtime_q + 1;
         mtime_d = mtime_inc;
+        
+        wait();
 
-        std::cout << sc_time_stamp() << " MTIME_D: " << std::hex << mtime_q << "\n";
-    }
-}
-
-// Implements FF for registered outputs rvalid and device_rdata
-void Slave::outputs(){
+        device_rvalid.write( device_req.read() );
     
-    device_rvalid.write( device_req.read() );
-    
-    if (device_req.read() == true) {
-        if (device_we.read() == true) {
-            // write request
-            switch (device_addr.read()) {
-                case MTIME_LOW: {
-                    std::cout << sc_time_stamp() << " W: MTIME_LOW\n";
-                    mtime_d &= ~0x00000000FFFFFFFF;
-                    mtime_d |= device_wdata.read();
-                    break;
-                }
-                case MTIME_HIGH: {
-                    std::cout << sc_time_stamp() << " W: MTIME_HIGH\n";
-                    mtime_d &= ~0xFFFFFFFF00000000;
-                    mtime_d |= device_wdata.read() << 32;
-                    break;
+        if (device_req.read() == true) {
+            if (device_we.read() == true) {
+                // write request
+                switch (device_addr.read()) {
+                    case MTIME_LOW: {
+                        //std::cout << sc_time_stamp() << " W: MTIME_LOW\n";
+                        mtime_d &= ~0x00000000FFFFFFFF;
+                        mtime_d |= device_wdata.read();
+                        break;
                     }
-                case MTIMECMP_LOW: {
-                    std::cout << sc_time_stamp() << " W: MTIMECMP_LOW\n";
-                    mtimecmp_d &= ~0x00000000FFFFFFFF;
-                    mtimecmp_d |= device_wdata.read();                        
-                    break;
+                    case MTIME_HIGH: {
+                        //std::cout << sc_time_stamp() << " W: MTIME_HIGH\n";
+                        mtime_d &= ~0xFFFFFFFF00000000;
+                        mtime_d |= device_wdata.read() << 32;
+                        break;
+                        }
+                    case MTIMECMP_LOW: {
+                        //std::cout << sc_time_stamp() << " W: MTIMECMP_LOW\n";
+                        mtimecmp_d &= ~0x00000000FFFFFFFF;
+                        mtimecmp_d |= device_wdata.read();                        
+                        break;
+                        }
+                    case MTIMECMP_HIGH: {
+                        //std::cout << sc_time_stamp() << " W: MTIMECMP_HIGH\n";
+                        mtimecmp_d &= ~0xFFFFFFFF00000000;
+                        mtimecmp_d |= device_wdata.read() << 32;
+                        break;}
+                    default: {
+                        //std::cout << "W: Error!\n";
                     }
-                case MTIMECMP_HIGH: {
-                    std::cout << sc_time_stamp() << " W: MTIMECMP_HIGH\n";
-                    mtimecmp_d &= ~0xFFFFFFFF00000000;
-                    mtimecmp_d |= device_wdata.read() << 32;
-                    break;}
-                default: {
-                    std::cout << "W: Error!\n";
-                }
-            } 
-        } else {
-            // read request
-            switch (device_addr.read()) {
-                case MTIME_LOW: {
-                    std::cout << sc_time_stamp() << " R: MTIME_LOW\n";
-                    device_rdata.write(mtime_q & 0x00000000FFFFFFFF);
-                    break;
+                } 
+            } else {
+                // read request
+                switch (device_addr.read()) {
+                    case MTIME_LOW: {
+                        //std::cout << sc_time_stamp() << " R: MTIME_LOW\n";
+                        device_rdata.write(mtime_q & 0x00000000FFFFFFFF);
+                        break;
+                        }
+                    case MTIME_HIGH: {
+                        //std::cout << sc_time_stamp() << " R: MTIME_HIGH\n";
+                        device_rdata.write((mtime_q & 0xFFFFFFFF00000000 ) >> 32);
+                        break;
+                        }
+                    case MTIMECMP_LOW: {
+                        //std::cout << sc_time_stamp() << " R: MTIMECMP_LOW\n";
+                        device_rdata.write(mtimecmp_q & 0x00000000FFFFFFFF);
+                        break;
+                        }
+                    case MTIMECMP_HIGH: {
+                        //std::cout << sc_time_stamp() << " R: MTIMECMP_HIGH\n";
+                        device_rdata.write((mtimecmp_q & 0xFFFFFFFF00000000) >> 32);
+                        break;
+                        }
+                    default: {
+                        //std::cout << "W: Error!\n";
                     }
-                case MTIME_HIGH: {
-                    std::cout << sc_time_stamp() << " R: MTIME_HIGH\n";
-                    device_rdata.write((mtime_q & 0xFFFFFFFF00000000 ) >> 32);
-                    break;
-                    }
-                case MTIMECMP_LOW: {
-                    std::cout << sc_time_stamp() << " R: MTIMECMP_LOW\n";
-                    device_rdata.write(mtimecmp_q & 0x00000000FFFFFFFF);
-                    break;
-                    }
-                case MTIMECMP_HIGH: {
-                    std::cout << sc_time_stamp() << " R: MTIMECMP_HIGH\n";
-                    device_rdata.write((mtimecmp_q & 0xFFFFFFFF00000000) >> 32);
-                    break;
-                    }
-                default: {
-                    std::cout << "W: Error!\n";
                 }
             }
         }
+
+        std::cout << sc_time_stamp() << " MTIME_D: " << std::hex << mtime_q << "\n";
     }
-    
 }

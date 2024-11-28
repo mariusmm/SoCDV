@@ -21,14 +21,10 @@ SC_MODULE(Slave) {
     SC_CTOR(Slave) {
         SC_THREAD(process);         // Register the process as a thread
         sensitive << clk_i.neg();   // Trigger the process on the negative edge of the clock
-
-        SC_METHOD(outputs);         // Register the process as a method
-        sensitive << clk_i.pos();   // Trigger the process on the positive edge of the clock
     }
 
 private:
     void process();
-    void outputs();
     
     sc_uint<64> mtime_q;
     sc_uint<64> mtime_d;
