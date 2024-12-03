@@ -1,0 +1,40 @@
+# SystemC examples
+
+
+## Example 1
+
+A simple 1-bit inverter using a SC_METHOD.
+
+## Example 2
+
+A basic counter example using a SC_THREAD. 
+
+## Example 3
+
+Another inverter example but using a SC_THREAD sensitive to the input.
+
+## Example 4
+
+Simple example using sc_fifo channel.
+
+## Example 5
+
+Simple example using an sc_event.
+
+## Example 6
+
+Example of synthesizing a SystemC module using [Catapult](https://eda.sw.siemens.com/en-US/ic/catapult-high-level-synthesis/).
+
+## Example 7
+
+A more complex example using a custom channel emulating a very basic bus.
+
+# SystemC Assignments 
+
+## Assignment 1
+
+Simple model and testbench for Timer IP by [IBEX SoC](https://github.com/lowRISC/ibex/blob/master/shared/rtl/timer.sv).
+
+## Assignment 2
+
+Mixed SystemC - HDL simulation for the same Timer using original SystemVerilog source code.
