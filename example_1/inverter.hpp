@@ -14,7 +14,7 @@ SC_MODULE(inverter)
 	void invert();
 	SC_CTOR(inverter)
 	{
-		SC_THREAD(invert);
+		SC_METHOD(invert);
 		sensitive << in; // sensitive to changes in the input
 	}
 	~inverter(){}

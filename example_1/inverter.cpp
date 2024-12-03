@@ -9,11 +9,7 @@ using namespace sc_core;
 
 void inverter::invert()
 {
-	while(1)
-	{
-		wait();
-		out.write(! in.read() );
-	}
+	out.write(! in.read() );
 }
 
 
