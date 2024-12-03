@@ -5,8 +5,9 @@ SC_MODULE(Producer) {
     sc_port<sc_fifo_out_if<int>> out_port;  // Interface port
    sc_in<bool> clk; 
     void write_data() {
+	int value = 0;
+
       while(1) {
-        int value = 0;
         wait();
         value++;
         out_port->write(value);  // Write data to FIFO
