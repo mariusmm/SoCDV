@@ -29,6 +29,10 @@ Example of synthesizing a SystemC module using [Catapult](https://eda.sw.siemens
 
 A more complex example using a custom channel emulating a very basic bus.
 
+## Example TLM 1
+
+A simple blocking TLM-2.0 example
+
 # SystemC Assignments 
 
 ## Assignment 1
